@@ -35,6 +35,7 @@ public class GameMain : MonoBehaviour
         factory.ShowBelt();
         if (isShow)
         {
+            
             show = factory.CopyShow(ShowIndex);
             recipe = factory.CopyShowRecipe(show.RecipeId);
         }

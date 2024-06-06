@@ -32,7 +32,7 @@ public class Factory
     
     public void GameTick()
     {
-        //MachineGameTick();
+        MachineGameTick();
         BeltGameTick();
     }
 
@@ -42,12 +42,13 @@ public class Factory
         _buffer = new UnsafeList<int>(64, Allocator.Persistent);
 
         int index = 0;
-        for (int i = 0; i < 1_0000; i++)
+        for (int i = 0; i < 300; i++)
         {
-            CreateBelt(new Vector3(-50, 1, index++ * 0.5f), new Vector3(50, 1, index * 0.5f));
+            CreateBelt(new Vector3(-500, 1, index++ * 0.5f), new Vector3(500, 1, index * 0.5f));
         }
 
-        _ShowDates = new UnsafeList<GameObjectJobDate>(64, Allocator.Persistent);
+        _beltShowPre.Init();
+        _beltShowDateWrite.Init();
         QueueGo1 = new TransformAccessArray(8);
 
         // for (int i = 0; i < 100; i++)
@@ -70,7 +71,7 @@ public class Factory
 
         if (BeltCount <= 0)
             return;
-        var handel = _beltTask.Schedule(BeltCount, 64);
+        var handel = _beltTask.Schedule(BeltCount, 8);
         handel.Complete();
 
 
@@ -81,49 +82,44 @@ public class Factory
     private TransformAccessArray QueueGo1;
     private int QueueGoLen;
 
-    private UnsafeList<GameObjectJobDate> _ShowDates;
+    private BeltShowPre _beltShowPre;
+    private BeltShowDateWriteTask _beltShowDateWrite;
     private int _showLen;
     public GameObject pre;
     private GameObjectJob _showTask;
     
     public void ShowBelt()
     {
-        _showLen = 0;
-        int index = 0;
-        _ShowDates.Clear();
-        foreach (var beltProgress in _belt)
+
+        _beltShowPre.Belts = _belt;
+        _beltShowPre.PreShow();
+
+        if (_beltShowDateWrite.ShowDates.m_length < _beltShowPre.AllCount)
         {
-            //if(index>=BeltLine.Count)
-            //    BeltLine.Add(CreatLine(beltProgress.StartPos,beltProgress.EndPos));
-            //BeltLine[index].SetPositions(new[] { beltProgress.StartPos, beltProgress.EndPos });
-            ShowBeltItem(beltProgress);
-            index++;
+            _beltShowDateWrite.ShowDates.Capacity = _beltShowPre.AllCount;
+            _beltShowDateWrite.ShowDates.m_length = _beltShowPre.AllCount;
         }
+        _beltShowDateWrite.Belts = _belt;
+        _beltShowDateWrite.WriteStartIndex = _beltShowPre.WriteStartIndex;
+        _beltShowDateWrite.Schedule(BeltCount,8).Complete();
         
-        _showTask.Dates = _ShowDates;
+        CheckBeltItemGoEnough(_beltShowPre.AllCount);
+        
+        
+        _showTask.Dates = _beltShowDateWrite.ShowDates;
         _showTask.Schedule(QueueGo1).Complete();
     }
 
-    private unsafe void ShowBeltItem(BeltProgress belt)
+    private void CheckBeltItemGoEnough(int need)
     {
-        for (int i = 0; i < belt.ItemNum; i++)
+        while (QueueGoLen<need)
         {
-            var pi = (belt.ItemStartIndex + i) % belt.MaxCount;
-            var p=belt.Part.Ptr[pi];
             GetBeltItem();
-            _showLen++;
-            var pos = belt.StartPos + (belt.EndPos - belt.StartPos) * p / BeltProgress.BeltPartEnd;
-            GameObjectJobDate d = default;
-            d.Position = pos;
-            _ShowDates.Add(d);
         }
     }
 
     private void GetBeltItem()
     {
-        if (QueueGoLen > _showLen)
-            return;
-
         var go = Object.Instantiate(pre);
         QueueGo1.Add(go.transform);
         QueueGoLen++;
@@ -157,7 +153,7 @@ public class Factory
             new UnsafeList<int>(beltProgress.MaxCount, Allocator.Persistent, NativeArrayOptions.ClearMemory);
         beltProgress.Part.m_length = beltProgress.MaxCount;
         BeltCount++;
-        beltProgress.Speed = BeltProgress.BeltPartEnd / beltProgress.MaxCount / 20;
+        beltProgress.Speed = BeltProgress.BeltPartEnd / beltProgress.MaxCount / 1;
         _belt.Add(beltProgress);
     }
 
