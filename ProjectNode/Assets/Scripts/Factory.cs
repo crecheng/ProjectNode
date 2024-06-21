@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -6,11 +7,12 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
 [BurstCompile]
-public class Factory
+public class Factory : IDisposable
 {
     public UnsafeList<BeltProgress> _belt;
     public UnsafeList<int> _buffer;
@@ -20,11 +22,15 @@ public class Factory
     private MachineTask _machineTask;
     private UnsafeList<MachineProgress> _machine;
     private UnsafeList<MachineRecipe> _machineRecipes;
+    public Collider c;
+    public Rigidbody r;
+    public Animation a;
     
     public const int Count = 10_0000;
-
+    
     public void Init()
     {
+        
         InitBelt();
         InitMachine();
         
@@ -42,9 +48,10 @@ public class Factory
         _buffer = new UnsafeList<int>(64, Allocator.Persistent);
 
         int index = 0;
-        for (int i = 0; i < 300; i++)
+        for (int i = 0; i < 100; i++)
         {
-            CreateBelt(new Vector3(-500, 1, index++ * 0.5f), new Vector3(500, 1, index * 0.5f));
+            float z = 0f;// index++ * 0.5f;
+            CreateBelt(new Vector3(-500, 1, z), new Vector3(500, 1, z));
         }
 
         _beltShowPre.Init();
@@ -87,6 +94,8 @@ public class Factory
     private int _showLen;
     public GameObject pre;
     private GameObjectJob _showTask;
+
+    private int _f = 0;
     
     public void ShowBelt()
     {
@@ -105,8 +114,11 @@ public class Factory
         
         CheckBeltItemGoEnough(_beltShowPre.AllCount);
         
+        if(_f++%10==0)
+            Debug.Log(_beltShowDateWrite.ShowDates.m_length);
         
         _showTask.Dates = _beltShowDateWrite.ShowDates;
+        
         _showTask.Schedule(QueueGo1).Complete();
     }
 
@@ -240,6 +252,16 @@ public class Factory
     }
     
     #endregion
+
+    public void Dispose()
+    {
+        _belt.Dispose();
+        _buffer.Dispose();
+        _machine.Dispose();
+        _machineRecipes.Dispose();
+        QueueGo1.Dispose();
+    }
 }
+
 
 

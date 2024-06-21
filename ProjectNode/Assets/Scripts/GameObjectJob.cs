@@ -9,8 +9,10 @@ public struct GameObjectJob : IJobParallelForTransform
     public UnsafeList<GameObjectJobDate> Dates;
     public void Execute(int index, TransformAccess transform)
     {
-        if(Dates.m_length<=index)
+        if (Dates.m_length <= index)
+        {
             return;
+        }
         var d = Dates[index];
         bool flag = false;
         flag = d.isScale && SetScale(transform, d._Scale);

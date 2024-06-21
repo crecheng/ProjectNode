@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
 
 public class GameMain : MonoBehaviour
@@ -32,6 +33,7 @@ public class GameMain : MonoBehaviour
 
     private void Update()
     {
+        Profiler.BeginSample("GameMain.Update");
         factory.ShowBelt();
         if (isShow)
         {
@@ -39,5 +41,12 @@ public class GameMain : MonoBehaviour
             show = factory.CopyShow(ShowIndex);
             recipe = factory.CopyShowRecipe(show.RecipeId);
         }
+        Profiler.EndSample();
+    }
+
+    private void OnDestroy()
+    {
+        factory.Dispose();
+        Debug.Log("GameMain.OnDestroy");
     }
 }
