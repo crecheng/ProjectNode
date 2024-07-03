@@ -18,6 +18,7 @@ public class GameMain : MonoBehaviour
     {
         Main = this;
     }
+    
 
     private void Start()
     {
