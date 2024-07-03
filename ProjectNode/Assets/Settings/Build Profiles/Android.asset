@@ -17,9 +17,7 @@ MonoBehaviour:
   m_PlatformId: b9b35072a6f44c2e863f17467ea3dc13
   m_PlatformBuildProfile:
     rid: 4115412190206623747
-  m_Scenes:
-  - m_enabled: 1
-    m_path: Assets/Scenes/SampleScene.unity
+  m_Scenes: []
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:
@@ -157,7 +155,7 @@ MonoBehaviour:
     - line: '|   switchNVNGraphicsFirmwareMemory: 32'
     - line: '|   vulkanNumSwapchainBuffers: 3'
     - line: '|   vulkanEnableSetSRGBWrite: 0'
-    - line: '|   vulkanEnablePreTransform: 1'
+    - line: '|   vulkanEnablePreTransform: 0'
     - line: '|   vulkanEnableLateAcquireNextImage: 0'
     - line: '|   vulkanEnableCommandBufferRecycling: 1'
     - line: '|   loadStoreDebugModeEnabled: 0'
@@ -203,7 +201,7 @@ MonoBehaviour:
     - line: '|   stripEngineCode: 1'
     - line: '|   iPhoneStrippingLevel: 0'
     - line: '|   iPhoneScriptCallOptimization: 0'
-    - line: '|   ForceInternetPermission: 0'
+    - line: '|   ForceInternetPermission: 1'
     - line: '|   ForceSDCardPermission: 0'
     - line: '|   CreateWallpaper: 0'
     - line: '|   androidSplitApplicationBinary: 0'

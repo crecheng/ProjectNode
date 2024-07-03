@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Random = UnityEngine.Random;
@@ -24,6 +25,8 @@ public class GameMain : MonoBehaviour
         factory.Init();
         factory.pre = pre;
 
+        
+
     }
 
     private void FixedUpdate()
@@ -37,7 +40,6 @@ public class GameMain : MonoBehaviour
         factory.ShowBelt();
         if (isShow)
         {
-            
             show = factory.CopyShow(ShowIndex);
             recipe = factory.CopyShowRecipe(show.RecipeId);
         }
@@ -46,7 +48,7 @@ public class GameMain : MonoBehaviour
 
     private void OnDestroy()
     {
-        factory.Dispose();
+        factory?.Dispose();
         Debug.Log("GameMain.OnDestroy");
     }
 }
