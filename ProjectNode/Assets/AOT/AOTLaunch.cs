@@ -41,7 +41,7 @@ namespace AOT
             catch (Exception e)
             {
                 await AOTLaunch.Instance.LogExceptionAsync(e.ToString());
-                goto InEditor;
+                //goto InEditor;
             }
         }
 
