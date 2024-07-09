@@ -497,6 +497,7 @@ GameObject:
   - component: {fileID: 469768179}
   - component: {fileID: 469768178}
   - component: {fileID: 469768177}
+  - component: {fileID: 469768180}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -572,6 +573,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &469768180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469768175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c28149d0953642b68ad79e5c7e01c6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &669381112
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,7 +719,7 @@ GameObject:
   - component: {fileID: 1939324075}
   - component: {fileID: 1939324078}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: TestMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -789,13 +802,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1939324073}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e7e884962b042f2828603d277cd1615, type: 3}
+  m_Script: {fileID: 11500000, guid: 761f6c23d5df4767b829db5790e3dba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mesh: {fileID: 0}
-  _Filter: {fileID: 1939324076}
-  radius: 1
-  recursions: 4
+  Max: 0
+  Current: 0
+  pre:
+  - {fileID: 3766911851201455696, guid: 3fafd7f2e81ebc642ba84ca569321a9f, type: 3}
+  - {fileID: -6866284714384797164, guid: eeae618502cc17b4f94bfc20d4f262c4, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -805,5 +819,5 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 669381114}
   - {fileID: 248580980}
-  - {fileID: 469768179}
   - {fileID: 1939324077}
+  - {fileID: 469768179}

@@ -31,6 +31,11 @@ public static class NoiseTool
         return (int)(mangled%1024);
     }
     
+    /// <summary>
+    /// return 0~1
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public static Vector2 NoiseHash22(Vector2 position)
     {
         var v = new Vector2(
@@ -72,42 +77,54 @@ public static class NoiseTool
         return RandIntWithSeed(position, seed) / 1024f;
     }
 
-    public static float PerlinNoise(Vector2 position)
+    public static float PerlinNoise( Vector2 position ,int crystalSize)
     {
-        position += GlobalOffset;
-        Vector2 w = position;
+        Vector2 point = new Vector2(
+            Mathf.Floor(position.x / crystalSize),
+            Mathf.Floor(position.y / crystalSize));
+        
+        
+        Vector2[] vertex = new Vector2[]
+        {
+            new Vector2(point.x, point.y),
+            new Vector2(point.x + 1, point.y),
+            new Vector2(point.x, point.y + 1),
+            new Vector2(point.x + 1, point.y + 1),
+        };
+        
+        for (int i = 0; i < 4; ++i)
+            vertex[i] = NoiseHash22(vertex[i]);
+
+        Vector2 center = new Vector2(position.x % crystalSize / crystalSize, position.y % crystalSize / crystalSize);
+        center = new Vector2(FadeLerp(center.x), FadeLerp(center.y));
+
+        float x1 = Vector2.Dot(vertex[0], center);
+        float x2 = Vector2.Dot(vertex[1], center - new Vector2(1.0f, 0.0f));
+        float x3 = Vector2.Dot(vertex[2], center - new Vector2(0.0f, 1.0f));
+        float x4 = Vector2.Dot(vertex[3], center - new Vector2(1.0f, 1.0f));
+
+
         return Mathf.Clamp(
-                Mathf.Lerp(
-                    Mathf.Lerp(
-                        Vector2.Dot(GlobalVertex[0], position),
-                        Vector2.Dot(GlobalVertex[1], position - new Vector2(1.0f, 0.0f)),
-                        w.x),
-                    Mathf.Lerp(
-                        Vector2.Dot(GlobalVertex[2], position - new Vector2(0.0f, 1.0f)),
-                        Vector2.Dot(GlobalVertex[3], position - new Vector2(1.0f, 1.0f)),
-                        w.x),
-                    w.y)
-                , -1, 1)
-            ;
+            Mathf.Lerp(
+                Mathf.Lerp(x1, x2, center.x),
+                Mathf.Lerp(x3, x4, center.x),
+                center.y)
+            , -1, 1);
+    }
+    
+    public static float FadeLerp(float t)
+    {
+        return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
     public static void PreHandlePerlinNoise(Vector2 position2D, int crystalSize)
     {
-        Vector2 pi = new Vector2(
-            Mathf.Floor(position2D.x / crystalSize),
-            Mathf.Floor(position2D.y / crystalSize));
-        Vector2[] vertex = new Vector2[]
-        {
-            new Vector2(pi.x, pi.y),
-            new Vector2(pi.x + 1, pi.y),
-            new Vector2(pi.x, pi.y + 1),
-            new Vector2(pi.x + 1, pi.y + 1),
-        };
+        
+        
 
-        for (int i = 0; i < 4; ++i)
-            GlobalVertex[i] = NoiseHash22(vertex[i]);
+        
 
-        GlobalOffset = (position2D - pi * crystalSize) / crystalSize;
+        // GlobalOffset = (position2D - pi * crystalSize) / crystalSize;
     }
 
 }

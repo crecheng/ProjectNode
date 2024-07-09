@@ -7,19 +7,24 @@ public class TestMap : MonoBehaviour
     public int Max;
     public int Current;
 
-    public GameObject pre;
-    private List<GameObject> list = new List<GameObject>();
+    public MapTestBlock[] pre;
+    private List<MapTestBlock> list = new List<MapTestBlock>();
     
     private void Start()
     {
-        for (int i = 0; i < 128; i++)
+        for (int i = 0; i < 256; i++)
         {
-            for (int j = 0; j < 128; j++)
+            for (int j = 0; j < 256; j++)
             {
-                var go = Instantiate(pre);
+                
                 Vector2 pos = new Vector2(i, j);
-                NoiseTool.PreHandlePerlinNoise(pos,8);
-                var z = NoiseTool.PerlinNoise(pos);
+                var z = NoiseTool.PerlinNoise(pos, 64) * 128f;
+                z = Mathf.RoundToInt(z);
+                MapTestBlock go = null;
+                if (z > 35)
+                    go = Instantiate(pre[1], transform);
+                else
+                    go = Instantiate(pre[0], transform);
                 go.transform.position = new Vector3(i, z, j);
             }
         }
